@@ -1,0 +1,70 @@
+# TODO: Define stages for your pipeline
+stages:
+  - build
+  - test
+  - docker
+  - deploy
+
+# TODO: Define variables (if needed)
+variables:
+  DOCKER_REGISTRY: 'hanni85'
+  FRONTEND_IMAGE: '$DOCKER_REGISTRY/frontend'
+  BACKEND_IMAGE: '$DOCKER_REGISTRY/backend'
+
+# TODO: Define a job for building the frontend
+frontend-job:
+  stage: build # TODO: Specify stage
+  image: node:14-alpine # TODO: Specify Node.js image
+  script:
+    # TODO: Install dependencies
+    # TODO: Build the React app
+    - cd frontend
+    - npm install
+    - npm run build
+
+# TODO: Define a job for building and testing the backend
+# backend-job:
+#   stage: test # TODO: Specify stage
+#   image: python:3.9-slim # TODO: Specify Python image
+#   script:
+#     # TODO: Install dependencies
+#     # TODO: Run tests
+#     - cd backend
+#     - pip install -r requirements.txt
+#     - pytest
+
+backend-build-job:
+  stage: build
+  image: python:3.9-slim
+  script:
+    - cd backend
+    - pip install -r requirements.txt
+
+backend-test-job:
+  stage: test
+  image: python:3.9-slim
+  script:
+    - cd backend
+    - pytest
+
+# TODO: Define a job for building Docker images
+docker-build:
+  stage: docker # TODO: Specify stage
+  image: docker:latest
+  services:
+    - docker:dind
+  script:
+    # TODO: Build frontend Docker image
+    # TODO: Build backend Docker image
+    # TODO: Push images to Docker Hub (if on main branch)
+    - docker build -t $FRONTEND_IMAGE:latest frontend
+    - docker push $FRONTEND_IMAGE:latest
+    - docker build -t $BACKEND_IMAGE:latest backend
+    - docker push $BACKEND_IMAGE:latest
+
+# OPTIONAL: Define a deployment job (if applicable)
+deploy:
+  stage: deploy # TODO: Specify stage
+  script:
+    # TODO: Add deployment steps
+    - echo "Deploying to production..."
